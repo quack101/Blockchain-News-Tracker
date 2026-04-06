@@ -32,3 +32,6 @@ blockchain/coverage.json
 # IDEs
 .vscode/
 .idea/
+
+# Kiro specs
+.kiro/
