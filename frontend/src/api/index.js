@@ -1,30 +1,19 @@
-// mock API (backend not ready)
+import axios from "axios";
 
-export const publishArticle = async (data) => {
-  console.log("Mock publish:", data);
-};
+const BASE_URL = "http://localhost:5000";
 
-export const updateArticle = async (data) => {
-  console.log("Mock update:", data);
-};
+// Save published content to storage
+export const savePublishedContent = (id, content) =>
+  axios.post(`${BASE_URL}/publish/save`, { id, content });
 
-export const getArticle = async (id) => {
-  return {
-    data: {
-      id,
-      author: "0xABC123",
-      timestamp: "10:30 AM",
-      content: "This is a dummy article"
-    }
-  };
-};
+// Save updated content to storage
+export const saveUpdatedContent = (id, content) =>
+  axios.post(`${BASE_URL}/update/save`, { id, content });
 
-export const getHistory = async (id) => {
-  return {
-    data: [
-      { hash: "0x111", timestamp: "10:00 AM" },
-      { hash: "0x222", timestamp: "11:00 AM" },
-      { hash: "0x333", timestamp: "12:00 PM" }
-    ]
-  };
-};
+// get single article
+export const getArticle = (id) =>
+  axios.get(`${BASE_URL}/article/${id}`);
+
+// history
+export const getHistory = (id) =>
+  axios.get(`${BASE_URL}/history/${id}`);

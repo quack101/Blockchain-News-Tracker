@@ -7,8 +7,15 @@ function ViewHistory() {
   const [history, setHistory] = useState([]);
 
   const fetchHistory = async () => {
-    const res = await getHistory(id);
-    setHistory(res.data);
+    if (!id) return;
+
+    try {
+      const res = await getHistory(id);
+      setHistory(res.data);
+    } catch (err) {
+      console.error(err);
+      alert("Error fetching history");
+    }
   };
 
   return (
@@ -18,9 +25,14 @@ function ViewHistory() {
         value={id}
         onChange={(e) => setId(e.target.value)}
       />
-      <button onClick={fetchHistory}>Fetch History</button>
 
-      {history.length > 0 && <HistoryTimeline history={history} />}
+      <button onClick={fetchHistory}>
+        Fetch History
+      </button>
+
+      {history.length > 0 && (
+        <HistoryTimeline historyData={history} />
+      )}
     </div>
   );
 }

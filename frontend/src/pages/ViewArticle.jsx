@@ -1,23 +1,29 @@
 import { useState } from "react";
 import { getArticle } from "../api";
+import ArticleCard from "../components/ArticleCard";
 
 function ViewArticle() {
   const [id, setId] = useState("");
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const fetchArticle = async () => {
     if (!id) return;
 
     setLoading(true);
+    setError("");
+    setArticle(null);
+
     try {
       const res = await getArticle(id);
       setArticle(res.data);
     } catch (err) {
       console.error(err);
-      alert("Error fetching article");
+      setError("Could not fetch article. Please check the ID and try again.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -28,30 +34,21 @@ function ViewArticle() {
         onChange={(e) => setId(e.target.value)}
       />
 
-      <button onClick={fetchArticle} disabled={!id}>
-        Fetch
+      <button onClick={fetchArticle} disabled={!id || loading}>
+        {loading ? "Loading..." : "View"}
       </button>
 
-      {loading && <p>Loading...</p>}
-
-      {!loading && article && (
-        <div
-          style={{
-            marginTop: "15px",
-            border: "1px solid #38bdf8",
-            padding: "15px",
-            borderRadius: "10px",
-            background: "#1e293b"
-          }}
-        >
-          <p>🔗 Publisher: {article.author}</p>
-          <p>⏱ Published: {article.timestamp}</p>
-          <hr />
-          <p>{article.content}</p>
-        </div>
+      {error && (
+        <p style={{ color: "#ef4444", marginTop: "10px" }}>{error}</p>
       )}
 
-      {!loading && !article && <p>No article loaded</p>}
+      {article && <ArticleCard article={article} />}
+
+      {!article && !loading && !error && (
+        <p style={{ color: "#94a3b8", marginTop: "10px" }}>
+          Enter an article ID and click View to fetch it from the blockchain.
+        </p>
+      )}
     </div>
   );
 }
