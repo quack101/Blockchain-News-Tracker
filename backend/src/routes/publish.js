@@ -58,4 +58,13 @@ router.post("/", async (req, res) => {
   }
 });
 
-module.exports = router;
+
+router.post("/save", (req, res) => {
+  const { id, content } = req.body;
+  if (!id || !content) return res.status(400).send("ID and Content required");
+  storage.saveArticle(id, content);
+  res.json({ success: true });
+});
+
+
+module.exports = router;
